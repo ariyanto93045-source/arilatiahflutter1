@@ -51,10 +51,10 @@ class tugas1flutter extends StatelessWidget {
 
             // Deskripsi Singkat
             Text(
-              'Saya adalah peserta pelatihan yang sedang belajar Flutter dan pengembangan aplikasi mobile.',
+              'Sugeng RAwuh ng Aplikasi Futter.',
               style: TextStyle(
                 fontSize: 16,
-                color: Colors.grey[700],
+                color: Colors.deepPurpleAccent
                 
               ),
               textAlign: TextAlign.center ,

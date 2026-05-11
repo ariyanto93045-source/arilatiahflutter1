@@ -1,4 +1,5 @@
 import 'package:arilatiahflutter1/Tugasflutter1.dart';
+import 'package:arilatiahflutter1/tugasflutter2.dart';
 import 'package:flutter/material.dart';
 void main() {
   runApp(const MyApp());
@@ -30,7 +31,8 @@ class MyApp extends StatelessWidget {
         // tested with just a hot reload.
         colorScheme: .fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: tugas1flutter()
+      home: tugas()
+      
     );
   }
 }
