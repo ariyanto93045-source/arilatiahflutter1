@@ -8,26 +8,28 @@ class tugas extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text("TOKO LISTRIK"),
+        titleTextStyle:  TextStyle(fontSize : 40,),
         backgroundColor: const Color.fromARGB(255, 64, 255, 80),
         centerTitle: true,
+        
       ),
  // IDENTITAS UTAMA
           body: Column(
             children: [
-              SizedBox(height: 10),
+              SizedBox(height:40),
               Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 70),
+            padding: const EdgeInsets.symmetric(horizontal: 60),
             child: Container(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
-                color: const Color.fromARGB(255, 231, 240, 246),
+                color: const Color.fromARGB(255, 4, 170, 23),
                 borderRadius: BorderRadius.circular(18),
               ),
               child: const Row(
                 children: [
                   Icon(Icons.email, color: Color.fromARGB(255, 183, 58, 146)),
 
-                  SizedBox(width: 14),
+                  SizedBox(width: 20),
 
                   Text(
                     "ariyanto210@gmail.com",
@@ -47,7 +49,7 @@ class tugas extends StatelessWidget {
               children: const [
                 Icon(Icons.phone),
 
-                SizedBox(width: 18),
+                SizedBox(width: 20),
 
                 Text("081285431488"),
 
@@ -55,7 +57,7 @@ class tugas extends StatelessWidget {
 
                 Icon(Icons.location_on),
 
-                SizedBox(width: 8),
+                SizedBox(width: 10),
 
                 Text("Jakarta"),
               ],
@@ -66,52 +68,52 @@ class tugas extends StatelessWidget {
 
           // STATISTIK HORIZONTAL
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
+            padding: const EdgeInsets.symmetric(horizontal: 35),
             child: Row(
               children: [
 
                 Expanded(
                   child: Container(
-                    padding: const EdgeInsets.all(20),
+                    padding: const EdgeInsets.all(30),
                     decoration: BoxDecoration(
-                      color: Colors.orange.shade100,
-                      borderRadius: BorderRadius.circular(12),
+                      color: const Color.fromARGB(255, 178, 183, 255),
+                      borderRadius: BorderRadius.circular(40),
                     ),
                     child: const Column(
                       children: [
                         Text(
                           "250+",
                           style: TextStyle(
-                            fontSize: 24,
+                            fontSize: 30,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        SizedBox(height: 8),
+                        SizedBox(height: 10),
                         Text("Produk Terjual"),
                       ],
                     ),
                   ),
                 ),
 
-                const SizedBox(width: 12),
+                const SizedBox(width: 20),
 
                 Expanded(
                   child: Container(
-                    padding: const EdgeInsets.all(20),
+                    padding: const EdgeInsets.all(30),
                     decoration: BoxDecoration(
-                      color: Colors.green.shade100,
-                      borderRadius: BorderRadius.circular(12),
+                      color: const Color.fromARGB(255, 27, 104, 156),
+                      borderRadius: BorderRadius.circular(10),
                     ),
                     child: const Column(
                       children: [
                         Text(
                           "4.9",
                           style: TextStyle(
-                            fontSize: 24,
+                            fontSize: 29,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        SizedBox(height: 8),
+                        SizedBox(height: 10),
                         Text("Rating Toko"),
                       ],
                     ),
@@ -122,7 +124,7 @@ class tugas extends StatelessWidget {
           ),
 
           // DESKRIPSI NARATIF
-          const SizedBox(height: 24),
+          const SizedBox(height: 28),
 
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: 16),
@@ -131,8 +133,8 @@ class tugas extends StatelessWidget {
               "yang menyediakan berbagai kebutuhan Alat litrik "
               ,
               style: TextStyle(
-                fontSize: 16,
-                height: 1.5,
+                fontSize: 20,
+                height: 1,
               ),
               textAlign: TextAlign.justify,
             ),
@@ -140,16 +142,19 @@ class tugas extends StatelessWidget {
 
           const SizedBox(height: 24),
 
-          // VISUAL BRANDING
+          // MEREK TOKO
           Expanded(
             child: Container(
-              width: double.infinity,
-              margin: const EdgeInsets.all(16),
+              width: 300,
+              height: 80,
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
-                image: const DecorationImage(
-                  image: AssetImage("assets/gaming.jpg"),
+                color: const Color.fromARGB(255, 119, 156, 27),
+                borderRadius: BorderRadius.circular(10),
+                    image: DecorationImage(
+                  image: AssetImage("assetimage/image/bunga.jpg"),
                   fit: BoxFit.cover,
+                 
+                         
                                ),
               ),
             ),
