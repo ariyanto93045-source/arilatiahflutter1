@@ -136,7 +136,7 @@ class tugas extends StatelessWidget {
                 fontSize: 20,
                 height: 1,
               ),
-              textAlign: TextAlign.justify,
+              textAlign: (TextAlign.justify),
             ),
           ),
 
