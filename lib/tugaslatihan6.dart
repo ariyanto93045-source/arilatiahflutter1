@@ -99,7 +99,10 @@ class tugas6 extends StatelessWidget {
             onPressed: () {
               print("Tombol Masuk Ditekan");
             },
-            child: Text("Masuk", style: TextStyle(color: Colors.white)),
+            child: Row(
+              children: [Text("Masuk", style: TextStyle(color: Colors.white))Icon()],
+            ),
+            
           ),
 
           Text(
