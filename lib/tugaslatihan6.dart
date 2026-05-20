@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class tugas6 extends StatelessWidget {
-  const tugas6({super.key});
+class Tugas6 extends StatelessWidget {
+  const Tugas6({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +39,7 @@ class tugas6 extends StatelessWidget {
             style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
           ),
 
-          SizedBox(height: 70),
+          SizedBox(height: 50),
 
           const Text(
             "Nomor Hp atau Email",
@@ -59,7 +59,16 @@ class tugas6 extends StatelessWidget {
             ),
           ),
 
-          SizedBox(height: 15), // untuk batas border atas dan bawah
+          SizedBox(height: 25), // untuk batas border atas dan bawah
+          // INPUT NOMOR HP
+          TextField(
+            decoration: InputDecoration(
+              labelText: "Masukkan Nomor HP",
+              border: OutlineInputBorder(),
+              prefixIcon: Icon(Icons.phone),
+            ),
+          ),
+          SizedBox(height: 30),
           const Text(
             "Password",
             style: TextStyle(
@@ -78,73 +87,139 @@ class tugas6 extends StatelessWidget {
             ),
           ),
 
-          // INPUT NOMOR HP
-          TextField(
-            decoration: InputDecoration(
-              labelText: "Masukkan Nomor HP",
-              border: OutlineInputBorder(),
-              prefixIcon: Icon(Icons.phone),
-            ),
-          ),
-
           SizedBox(height: 15),
 
           SizedBox(height: 30),
 
           //  tombol masuk
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color.fromARGB(255, 114, 82, 255),
+          SizedBox(
+            width: double.infinity,
+            height: 50,
+            child: ElevatedButton(
+              // icon: const Icon(Icons.arrow_forward, color: Colors.white),
+              // label: const Text("Masuk", style: TextStyle(color: Colors.white)),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color.fromARGB(255, 8, 80, 139),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(25),
+                ),
+              ),
+              onPressed: () {
+                print("Tombol Masuk Ditekan");
+              },
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: const [
+                  Text(
+                    "Masuk",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+
+                  SizedBox(width: 10),
+
+                  Icon(Icons.login, color: Colors.white),
+                ],
+              ),
             ),
-            onPressed: () {
-              print("Tombol Masuk Ditekan");
-            },
+          ),
+          SizedBox(height: 40),
+          Row(
+            children: const [
+              Expanded(child: Divider()),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 10),
+                child: Text(
+                  "ATAU",
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ),
+              Expanded(child: Divider()),
+            ],
+          ),
+          SizedBox(height: 40),
+          Row(
+            children: [
+              Expanded(
+                child: OutlinedButton.icon(
+                  onPressed: () {},
+
+                  icon: const Icon(Icons.g_mobiledata, color: Colors.black),
+
+                  label: const Text(
+                    "Google",
+                    style: TextStyle(color: Colors.black, fontSize: 18),
+                  ),
+
+                  style: OutlinedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(width: 35),
+              Expanded(
+                child: OutlinedButton.icon(
+                  onPressed: () {},
+
+                  icon: const Icon(Icons.facebook, color: Colors.black),
+                  label: const Text(
+                    "Facebook",
+                    style: TextStyle(color: Colors.black, fontSize: 18),
+                  ),
+
+                  style: OutlinedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 70),
+
+          // FOOTER
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(vertical: 10),
+            decoration: const BoxDecoration(
+              color: Color.fromARGB(255, 11, 163, 37),
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(20),
+                bottomRight: Radius.circular(20),
+              ),
+            ),
+
             child: Row(
-              children: [Text("Masuk", style: TextStyle(color: Colors.white))Icon()],
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: const [
+                Text("Belum punya akun? ", style: TextStyle(fontSize: 18)),
+
+                Icon(
+                  Icons.app_registration,
+                  color: Colors.deepPurple,
+                  size: 20,
+                ),
+
+                Text(
+                  "Daftar Sekarang",
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: Colors.deepPurple,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
             ),
-            
-          ),
-
-          Text(
-            "Daftar Pelanggan",
-            style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
-          ),
-
-          SizedBox(height: 20),
-
-          // LIST TILE 1
-          ListTile(
-            leading: CircleAvatar(child: Icon(Icons.person)),
-            title: Text("Andi Rahmat"),
-            subtitle: Text("Status: Aktif"),
-          ),
-
-          // LIST TILE 2
-          ListTile(
-            leading: CircleAvatar(child: Icon(Icons.person)),
-            title: Text("Budi Santoso"),
-            subtitle: Text("Status: Non-Aktif"),
-          ),
-
-          // LIST TILE 3
-          ListTile(
-            leading: CircleAvatar(child: Icon(Icons.person)),
-            title: Text("Citra Natalia"),
-            subtitle: Text("Status: Aktif"),
-          ),
-
-          // LIST TILE 4
-          ListTile(
-            leading: CircleAvatar(child: Icon(Icons.person)),
-            title: Text("Dewi Lestari"),
-            subtitle: Text("Status: Aktif"),
-          ),
-
-          // LIST TILE 5
-          ListTile(
-            leading: CircleAvatar(child: Icon(Icons.person)),
-            title: Text("Eko Prasetyo"),
-            subtitle: Text("Status: Non-Aktif"),
           ),
         ],
       ),
