@@ -19,6 +19,89 @@ class InputInteraktif extends StatefulWidget {
   State<InputInteraktif> createState() => _InputInteraktifState();
 }
 
+// class _InputInteraktifState extends State<InputInteraktif> {
+
+//   // INDEX BOTTOM NAVIGATION
+//   int _selectedIndex = 0;
+
+//   // DAFTAR HALAMAN
+//   static const List<Widget> _widgetOptions = <Widget>[
+
+//     Center(
+//       child: Text(
+//         'Halaman Home',
+//         style: TextStyle(fontSize: 30),
+//       ),
+//     ),
+
+//     Center(
+//       child: Text(
+//         'Halaman Business',
+//         style: TextStyle(fontSize: 30),
+//       ),
+//     ),
+
+//     Center(
+//       child: Text(
+//         'Halaman School',
+//         style: TextStyle(fontSize: 30),
+//       ),
+//     ),
+//   ];
+
+//   // FUNGSI PINDAH HALAMAN
+//   void _onItemTapped(int index) {
+//     setState(() {
+//       _selectedIndex = index;
+//     });
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+
+//       // APPBAR
+//       appBar: AppBar(
+//         title: const Text("MY MOM KOS"),
+//         backgroundColor: Colors.green,
+//       ),
+
+//       // BODY
+//       body: Center(
+//         child: _widgetOptions.elementAt(_selectedIndex),
+//       ),
+
+//       // BOTTOM NAVIGATION
+//       bottomNavigationBar: BottomNavigationBar(
+
+//         items: const <BottomNavigationBarItem>[
+
+//           BottomNavigationBarItem(
+//             icon: Icon(Icons.home),
+//             label: 'Home',
+//           ),
+
+//           BottomNavigationBarItem(
+//             icon: Icon(Icons.business),
+//             label: 'Business',
+//           ),
+
+//           BottomNavigationBarItem(
+//             icon: Icon(Icons.school),
+//             label: 'School',
+//           ),
+//         ],
+
+//         currentIndex: _selectedIndex,
+
+//         selectedItemColor: Colors.amber,
+
+//         onTap: _onItemTapped,
+//       ),
+//     );
+//   }
+// }
+
 class _InputInteraktifState extends State<InputInteraktif> {
   // CHECKBOX
   bool setuju = false;
@@ -42,6 +125,22 @@ class _InputInteraktifState extends State<InputInteraktif> {
     return "${waktu.hour.toString().padLeft(2, '0')}:"
         "${waktu.minute.toString().padLeft(2, '0')}";
   }
+
+  // // INDEX BOTTOM NAVIGATION
+  // int _selectedIndex = 0;
+
+  // // DAFTAR HALAMAN
+  // static const List<Widget> _widgetOptions = <Widget>[
+  //   // InputInteraktif(),
+  //   tugas8(),
+  // ];
+
+  // // FUNGSI PINDAH HALAMAN
+  // void _onItemTapped(int index) {
+  //   setState(() {
+  //     _selectedIndex = index;
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -108,6 +207,7 @@ class _InputInteraktifState extends State<InputInteraktif> {
               crossAxisAlignment: CrossAxisAlignment.start,
 
               children: [
+                // Center(child: _widgetOptions.elementAt(_selectedIndex)),
                 // =====================
                 // CHECKBOX
                 // =====================
@@ -347,6 +447,25 @@ class _InputInteraktifState extends State<InputInteraktif> {
           ),
         ),
       ),
+      // // / BOTTOM NAVIGATION
+      // bottomNavigationBar: BottomNavigationBar(
+      //   items: const <BottomNavigationBarItem>[
+      //     BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Rumah'),
+
+      //     BottomNavigationBarItem(
+      //       icon: Icon(Icons.business),
+      //       label: 'Business',
+      //     ),
+
+      //     BottomNavigationBarItem(icon: Icon(Icons.school), label: 'School'),
+      //   ],
+
+      //   currentIndex: _selectedIndex,
+
+      //   selectedItemColor: Colors.amber,
+
+      //   onTap: _onItemTapped,
+      // ),
     );
   }
 }
