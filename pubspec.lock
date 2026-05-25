@@ -75,6 +75,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  gradient_icon:
+    dependency: "direct main"
+    description:
+      name: gradient_icon
+      sha256: "7e3c474671e966d66a0c307fffff25cceec1304c2b700d331daba74ae2bdddc8"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.1.0"
   leak_tracker:
     dependency: transitive
     description:
