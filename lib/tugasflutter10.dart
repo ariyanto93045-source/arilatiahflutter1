@@ -37,7 +37,7 @@ class _RegisterPageState extends State<RegisterPage> {
               Text("Nama : ${nama.text}"),
               Text("Email : ${email.text}"),
               Text("HP : ${hp.text}"),
-              Text("Kota : ${kota.text}"),
+              Text("Kota : $selectedKota"),
             ],
           ),
 
@@ -66,10 +66,14 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 
+  String selectedKota = "Jakarta";
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Tugas 10 Flutter")),
+      appBar: AppBar(
+        backgroundColor: Colors.blue,
+        title: const Text("Tugas 10 Flutter"),
+      ),
 
       body: Padding(
         padding: const EdgeInsets.all(25),
@@ -84,13 +88,13 @@ class _RegisterPageState extends State<RegisterPage> {
                 controller: nama,
 
                 decoration: const InputDecoration(
-                  labelText: "Nama Lengkap",
+                  labelText: "Nama lengkap ",
                   border: OutlineInputBorder(),
                 ),
 
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return "Nama jangan kosong";
+                    return "Nama diisi dong ";
                   }
 
                   return null;
@@ -110,7 +114,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return "Email wajib diisi";
+                    return "Jangan Lupa isi Email Ya";
                   }
 
                   if (!value.contains("@")) {
@@ -136,29 +140,56 @@ class _RegisterPageState extends State<RegisterPage> {
               const SizedBox(height: 20),
 
               // KOTA
-              TextFormField(
-                controller: kota,
+              DropdownButtonFormField<String>(
+                initialValue: selectedKota,
 
                 decoration: const InputDecoration(
                   labelText: "Kota Asal",
                   border: OutlineInputBorder(),
                 ),
 
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return "Kota wajib diisi";
-                  }
+                items: const [
+                  DropdownMenuItem(value: "Jakarta", child: Text("Jakarta")),
 
-                  return null;
+                  DropdownMenuItem(value: "Bandung", child: Text("Bandung")),
+
+                  DropdownMenuItem(value: "Surabaya", child: Text("Surabaya")),
+
+                  DropdownMenuItem(
+                    value: "Yogyakarta",
+                    child: Text("Yogyakarta"),
+                  ),
+                ],
+
+                onChanged: (value) {
+                  setState(() {
+                    selectedKota = value!;
+                  });
                 },
               ),
 
+              // // TextFormField(
+              // //   controller: kota,
+
+              // //   decoration: const InputDecoration(
+              // //     labelText: "Kota Asal",
+              // //     border: OutlineInputBorder(),
+              // //   ),
+
+              //   validator: (value) {
+              //     if (value == null || value.isEmpty) {
+              //       return "Kota wajib diisi";
+              //     }
+
+              //     return null;
+              //   },
+              // ),
               const SizedBox(height: 40),
 
               // BUTTON
               SizedBox(
                 width: double.infinity,
-                height: 50,
+                height: 70,
 
                 child: ElevatedButton(
                   onPressed: () {
@@ -194,13 +225,42 @@ class HasilPage extends StatelessWidget {
       appBar: AppBar(title: const Text("Konfirmasi")),
 
       body: Center(
-        child: Text(
-          "Terima kasih, $nama dari $kota telah mendaftar.",
-          textAlign: TextAlign.center,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // gambar JEMPOL
+            Image.asset(
+              "assetimage/image/jempol gambar.png",
+              width: 150,
+              height: 150,
+            ),
 
-          style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+            SizedBox(height: 20),
+
+            Text(
+              "$nama dari $kota telah mendaftar.",
+              textAlign: TextAlign.center,
+
+              style: const TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+            ),
+          ],
         ),
       ),
     );
+
+    // @override
+    // Widget build(BuildContext context) {
+    //   return Scaffold(
+    //     appBar: AppBar(title: const Text("Konfirmasi")),
+
+    //     body: Center(
+    //       child: Text(
+    //         "Terima kasih, $nama dari $kota telah mendaftar.",
+    //         textAlign: TextAlign.center,
+
+    //         style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+    //       ),
+    //     ),
+    //   );
   }
 }
