@@ -1,8 +1,8 @@
-import 'package:arilatiahflutter1/tugasflutter9.dart';
+import 'package:arilatiahflutter1/tugasflutter10.dart';
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -31,7 +31,7 @@ class MyApp extends StatelessWidget {
         // tested with just a hot reload.
         colorScheme: .fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: HomePage(),
+      home: RegisterPage(),
     );
   }
 }
