@@ -1,8 +1,14 @@
-import 'package:arilatiahflutter1/tugasflutter10.dart';
+import 'package:arilatiahflutter1/preference_handler.dart';
+import 'package:arilatiahflutter1/splash_scree.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
-void main() {
-  runApp(MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await initializeDateFormatting('id_ID', null);
+  await PreferenceHandler.init();
+
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -31,7 +37,7 @@ class MyApp extends StatelessWidget {
         // tested with just a hot reload.
         colorScheme: .fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: RegisterPage(),
+      home: SplashScreen(),
     );
   }
 }
