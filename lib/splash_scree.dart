@@ -79,7 +79,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
             const SizedBox(height: 10),
 
-            // LOADING
+            // LOADING untu membuat loading sambil menunggu waktu 3 detih untuk masuk ke homescreen
             const CircularProgressIndicator(color: Colors.white),
           ],
         ),

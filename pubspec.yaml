@@ -33,7 +33,9 @@ dependencies:
     sdk: flutter
   gradient_icon: ^2.0.0
   intl: ^0.20.2
+  path: ^1.9.1
   shared_preferences: ^2.5.5
+  sqflite: ^2.4.2+1
 
 dev_dependencies:
   flutter_lints: ^6.0.0

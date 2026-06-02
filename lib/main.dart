@@ -1,5 +1,5 @@
 import 'package:arilatiahflutter1/preference_handler.dart';
-import 'package:arilatiahflutter1/splash_scree.dart';
+import 'package:arilatiahflutter1/tugasflutter11.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
@@ -37,7 +37,7 @@ class MyApp extends StatelessWidget {
         // tested with just a hot reload.
         colorScheme: .fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: SplashScreen(),
+      home: Tugas(),
     );
   }
 }

@@ -38,6 +38,10 @@ class HomeScreen extends StatelessWidget {
       body: const Center(
         child: Text("Selamat Datang", style: TextStyle(fontSize: 24)),
       ),
+      // GAMBAR
+      // Image.asset('assetimage/image/mouse.jpg', width: 150),
+
+      // const SizedBox(height: 20),
     );
   }
 }
