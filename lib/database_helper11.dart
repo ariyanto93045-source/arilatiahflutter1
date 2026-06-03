@@ -27,11 +27,13 @@ class DBHelper {
       onCreate: (db, version) async {
         await db.execute('''
           CREATE TABLE users(
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            email TEXT UNIQUE,
-            password TEXT
-          )
-        ''');
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      nama TEXT,
+      email TEXT UNIQUE,
+      hp TEXT,
+      pasword TEXT
+    )
+  ''');
       },
       // onUpgrade: (db, oldVersion, newVersion) {
       //    await db.execute('''
