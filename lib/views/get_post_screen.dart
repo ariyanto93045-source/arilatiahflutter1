@@ -1,3 +1,4 @@
+import 'package:arilatiahflutter1/model/product_models.dart';
 import 'package:arilatiahflutter1/services/api_services.dart';
 import 'package:flutter/material.dart';
 
@@ -17,7 +18,7 @@ class _PostListScreenDay33State extends StatefulWidget {
 
 class _PostListScreenDay33State extends State<PostListScreenDay33> {
   late final ApiService _apiService;
-  late Future<List<PostModels>> _postsFuture;
+  late Future<List<PosModel>> _postsFuture;
 
   @override
   void initState() {
@@ -73,6 +74,81 @@ class _PostListScreenDay33State extends State<PostListScreenDay33> {
               ),
             );
           }
+          if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return const Center(child: Text('Tidak ada data produk'));
+          }
+
+          final products = snapshot.data!;
+
+          return RefreshIndicator(
+            onRefresh: () async => _refreshPosts(),
+            child: ListView.builder(
+              itemCount: products.length,
+              itemBuilder: (context, index) {
+                final product = products[index];
+
+                return Card(
+                  margin: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 6,
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(12),
+                    child: Row(
+                      children: [
+                        Image.network(
+                          product.image,
+                          width: 80,
+                          height: 80,
+                          fit: BoxFit.contain,
+                        ),
+
+                        const SizedBox(width: 12),
+
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                product.title,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+
+                              const SizedBox(height: 8),
+
+                              Text(
+                                '\$${product.price}',
+                                style: const TextStyle(
+                                  color: Colors.green,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                ),
+                              ),
+
+                              const SizedBox(height: 4),
+
+                              Text('⭐ ${product.rating.rate}'),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+
           // class _PostListScreenDay33State extends State<PostListScreenDay33> {
           //   late final ApiService _apiService;
           //   late Future<List<product_models>> _postsFuture;
@@ -131,53 +207,53 @@ class _PostListScreenDay33State extends State<PostListScreenDay33> {
           //             ); // Center
           //           }
 
-          if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return const Center(child: Text('Tidak ada data post.'));
-          }
+//           if (!snapshot.hasData || snapshot.data!.isEmpty) {
+//             return const Center(child: Text('Tidak ada data post.'));
+//           }
 
-          final posts = snapshot.data!;
+//           final posts = snapshot.data!;
 
-          return RefreshIndicator(
-            onRefresh: () async => _refreshPosts(),
-            child: ListView.builder(
-              itemCount: posts.length,
-              itemBuilder: (context, index) {
-                final post = posts[index];
-                return Card(
-                  margin: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 6,
-                  ), // EdgeInsets.symmetric
-                  child: ListTile(
-                    leading: CircleAvatar(
-                      backgroundColor: AppColor.primaryColor,
-                      child: Text(
-                        '${post.id}',
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 12,
-                        ), // TextStyle
-                      ), // Text
-                    ), // CircleAvatar
-                    title: Text(
-                      post.title ?? "",
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(fontWeight: FontWeight.w600),
-                    ), // Text
-                    subtitle: Text(
-                      post.body ?? "",
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ), // Text
-                    trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-                  ), // ListTile
-                ); // Card
-              },
-            ), // ListView.builder
-          ); // RefreshIndicator
-        },
-      ), // FutureBuilder
-    ); // Scaffold
-  }
-}
+//           return RefreshIndicator(
+//             onRefresh: () async => _refreshPosts(),
+//             child: ListView.builder(
+//               itemCount: posts.length,
+//               itemBuilder: (context, index) {
+//                 final post = posts[index];
+//                 return Card(
+//                   margin: const EdgeInsets.symmetric(
+//                     horizontal: 12,
+//                     vertical: 6,
+//                   ), // EdgeInsets.symmetric
+//                   child: ListTile(
+//                     leading: CircleAvatar(
+//                       backgroundColor: AppColor.primaryColor,
+//                       child: Text(
+//                         '${post.id}',
+//                         style: const TextStyle(
+//                           color: Colors.white,
+//                           fontSize: 12,
+//                         ), // TextStyle
+//                       ), // Text
+//                     ), // CircleAvatar
+//                     title: Text(
+//                       post.title ?? "",
+//                       maxLines: 1,
+//                       overflow: TextOverflow.ellipsis,
+//                       style: const TextStyle(fontWeight: FontWeight.w600),
+//                     ), // Text
+//                     subtitle: Text(
+//                       post.body ?? "",
+//                       maxLines: 2,
+//                       overflow: TextOverflow.ellipsis,
+//                     ), // Text
+//                     trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+//                   ), // ListTile
+//                 ); // Card
+//               },
+//             ), // ListView.builder
+//           ); // RefreshIndicator
+//         },
+//       ), // FutureBuilder
+//     ); // Scaffold
+//   }
+// }
