@@ -239,7 +239,7 @@ class _PostListScreenDay33State extends State<PostListScreenDay33> {
                                 Padding(
                                   padding: const EdgeInsets.fromLTRB(
                                     16,
-                                    12,
+                                    16,
                                     16,
                                     16,
                                   ),
@@ -249,7 +249,7 @@ class _PostListScreenDay33State extends State<PostListScreenDay33> {
                                     children: [
                                       Text(
                                         product.title,
-                                        maxLines: 2,
+                                        maxLines: 1,
                                         overflow: TextOverflow.ellipsis,
                                         style: const TextStyle(
                                           fontSize: 14,
@@ -268,8 +268,10 @@ class _PostListScreenDay33State extends State<PostListScreenDay33> {
                                           const SizedBox(width: 4),
                                           Text(
                                             '${product.rating.rate} • ${product.category}',
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
                                             style: const TextStyle(
-                                              fontSize: 12,
+                                              fontSize: 11,
                                               color: Color(0xFF6B7280),
                                             ),
                                           ),
@@ -283,7 +285,7 @@ class _PostListScreenDay33State extends State<PostListScreenDay33> {
                                           Text(
                                             'Rp ${product.price.toStringAsFixed(2)}',
                                             style: const TextStyle(
-                                              fontSize: 16,
+                                              fontSize: 14,
                                               fontWeight: FontWeight.w700,
                                               color: Color(0xFF006B2C),
                                             ),
@@ -291,8 +293,8 @@ class _PostListScreenDay33State extends State<PostListScreenDay33> {
                                           Row(
                                             children: [
                                               Container(
-                                                width: 34,
-                                                height: 34,
+                                                width: 30,
+                                                height: 30,
                                                 decoration: BoxDecoration(
                                                   color: const Color(
                                                     0xFFF4FCF0,
@@ -308,8 +310,8 @@ class _PostListScreenDay33State extends State<PostListScreenDay33> {
                                               ),
                                               const SizedBox(width: 8),
                                               Container(
-                                                width: 34,
-                                                height: 34,
+                                                width: 30,
+                                                height: 30,
                                                 decoration: BoxDecoration(
                                                   color: const Color(
                                                     0xFFFE6B00,
@@ -340,7 +342,7 @@ class _PostListScreenDay33State extends State<PostListScreenDay33> {
                             crossAxisCount: 2,
                             mainAxisSpacing: 16,
                             crossAxisSpacing: 16,
-                            childAspectRatio: 0.55,
+                            childAspectRatio: 0.45,
                           ),
                     ),
                   ),
