@@ -27,7 +27,7 @@ class PosModel {
   @JsonKey(name: "description")
   String description;
   @JsonKey(name: "category")
-  Category category;
+  String category;
   @JsonKey(name: "image")
   String image;
   @JsonKey(name: "rating")
@@ -48,24 +48,6 @@ class PosModel {
 
   Map<String, dynamic> toJson() => _$PosModelToJson(this);
 }
-
-enum Category {
-  @JsonValue("electronics")
-  ELECTRONICS,
-  @JsonValue("jewelery")
-  JEWELERY,
-  @JsonValue("men's clothing")
-  MEN_S_CLOTHING,
-  @JsonValue("women's clothing")
-  WOMEN_S_CLOTHING,
-}
-
-final categoryValues = EnumValues({
-  "electronics": Category.ELECTRONICS,
-  "jewelery": Category.JEWELERY,
-  "men's clothing": Category.MEN_S_CLOTHING,
-  "women's clothing": Category.WOMEN_S_CLOTHING,
-});
 
 @JsonSerializable()
 class Rating {
