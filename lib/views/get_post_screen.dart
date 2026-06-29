@@ -87,6 +87,18 @@ class _PostListScreenDay33State extends State<PostListScreenDay33> {
 
             final products = snapshot.data!;
 
+            // === LOGIKAL FILTER KATEGORI DI SINI ===
+            final selectedCategory = categories[_selectedCategoryIndex];
+            final filteredProducts = selectedCategory == 'Semua'
+                ? products
+                : products
+                      .where(
+                        (product) =>
+                            product.category.toString().toLowerCase() ==
+                            selectedCategory.toLowerCase(),
+                      )
+                      .toList();
+
             return RefreshIndicator(
               onRefresh: () async => _refreshPosts(),
               backgroundColor: Colors.white,
@@ -183,169 +195,191 @@ class _PostListScreenDay33State extends State<PostListScreenDay33> {
                       ),
                     ),
                   ),
-                  SliverPadding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 16,
-                    ),
-                    sliver: SliverGrid(
-                      delegate: SliverChildBuilderDelegate((context, index) {
-                        final product = products[index];
-                        return GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) =>
-                                    DetailProductPage(product: product),
-                              ),
-                            );
-                          },
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(20),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(0.04),
-                                  blurRadius: 14,
-                                  offset: const Offset(0, 8),
-                                ),
-                              ],
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                              children: [
-                                Expanded(
-                                  child: Container(
-                                    decoration: const BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.only(
-                                        topLeft: Radius.circular(20),
-                                        topRight: Radius.circular(20),
-                                      ),
-                                    ),
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(16),
-                                      child: Center(
-                                        child: Image.network(
-                                          product.image,
-                                          fit: BoxFit.contain,
-                                        ),
-                                      ),
-                                    ),
+
+                  // === JIKA HASIL FILTER KOSONG ===
+                  if (filteredProducts.isEmpty)
+                    const SliverToBoxAdapter(
+                      child: Padding(
+                        padding: EdgeInsets.all(32),
+                        child: Center(
+                          child: Text(
+                            'Produk tidak ditemukan untuk kategori ini',
+                          ),
+                        ),
+                      ),
+                    )
+                  else
+                    SliverPadding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 16,
+                      ),
+                      sliver: SliverGrid(
+                        delegate: SliverChildBuilderDelegate(
+                          (context, index) {
+                            // Menggunakan filteredProducts, bukan products lagi
+                            final product = filteredProducts[index];
+                            return GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) =>
+                                        DetailProductPage(product: product),
                                   ),
+                                );
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(20),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(0.04),
+                                      blurRadius: 14,
+                                      offset: const Offset(0, 8),
+                                    ),
+                                  ],
                                 ),
-                                Padding(
-                                  padding: const EdgeInsets.fromLTRB(
-                                    16,
-                                    16,
-                                    16,
-                                    16,
-                                  ),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        product.title,
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: const TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w600,
-                                          color: Color(0xFF1F2937),
-                                        ),
-                                      ),
-                                      const SizedBox(height: 10),
-                                      Row(
-                                        children: [
-                                          const Icon(
-                                            Icons.star,
-                                            size: 14,
-                                            color: Color(0xFFF96E00),
+                                child: Column(
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.stretch,
+                                  children: [
+                                    Expanded(
+                                      child: Container(
+                                        decoration: const BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius: BorderRadius.only(
+                                            topLeft: Radius.circular(20),
+                                            topRight: Radius.circular(20),
                                           ),
-                                          const SizedBox(width: 4),
+                                        ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(16),
+                                          child: Center(
+                                            child: Image.network(
+                                              product.image,
+                                              fit: BoxFit.contain,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(16),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
                                           Text(
-                                            '${product.rating.rate} • ${product.category}',
+                                            product.title,
                                             maxLines: 1,
                                             overflow: TextOverflow.ellipsis,
                                             style: const TextStyle(
-                                              fontSize: 11,
-                                              color: Color(0xFF6B7280),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      const SizedBox(height: 14),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Text(
-                                            'Rp ${product.price.toStringAsFixed(2)}',
-                                            style: const TextStyle(
                                               fontSize: 14,
-                                              fontWeight: FontWeight.w700,
-                                              color: Color(0xFF006B2C),
+                                              fontWeight: FontWeight.w600,
+                                              color: Color(0xFF1F2937),
                                             ),
                                           ),
+                                          const SizedBox(height: 10),
                                           Row(
                                             children: [
-                                              Container(
-                                                width: 30,
-                                                height: 30,
-                                                decoration: BoxDecoration(
-                                                  color: const Color(
-                                                    0xFFF4FCF0,
+                                              const Icon(
+                                                Icons.star,
+                                                size: 14,
+                                                color: Color(0xFFF96E00),
+                                              ),
+                                              const SizedBox(width: 4),
+                                              Expanded(
+                                                child: Text(
+                                                  '${product.rating.rate} • ${product.category}',
+                                                  maxLines: 1,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  style: const TextStyle(
+                                                    fontSize: 11,
+                                                    color: Color(0xFF6B7280),
                                                   ),
-                                                  borderRadius:
-                                                      BorderRadius.circular(12),
-                                                ),
-                                                child: const Icon(
-                                                  Icons.favorite_border,
-                                                  color: Color(0xFF6B7280),
-                                                  size: 18,
                                                 ),
                                               ),
-                                              const SizedBox(width: 8),
-                                              Container(
-                                                width: 30,
-                                                height: 30,
-                                                decoration: BoxDecoration(
-                                                  color: const Color(
-                                                    0xFFFE6B00,
+                                            ],
+                                          ),
+                                          const SizedBox(height: 14),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Text(
+                                                'Rp ${product.price.toStringAsFixed(2)}',
+                                                style: const TextStyle(
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.w700,
+                                                  color: Color(0xFF006B2C),
+                                                ),
+                                              ),
+                                              Row(
+                                                children: [
+                                                  Container(
+                                                    width: 30,
+                                                    height: 30,
+                                                    decoration: BoxDecoration(
+                                                      color: const Color(
+                                                        0xFFF4FCF0,
+                                                      ),
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                            12,
+                                                          ),
+                                                    ),
+                                                    child: const Icon(
+                                                      Icons.favorite_border,
+                                                      color: Color(0xFF6B7280),
+                                                      size: 18,
+                                                    ),
                                                   ),
-                                                  borderRadius:
-                                                      BorderRadius.circular(12),
-                                                ),
-                                                child: const Icon(
-                                                  Icons.shopping_cart,
-                                                  color: Colors.white,
-                                                  size: 18,
-                                                ),
+                                                  const SizedBox(width: 8),
+                                                  Container(
+                                                    width: 30,
+                                                    height: 30,
+                                                    decoration: BoxDecoration(
+                                                      color: const Color(
+                                                        0xFFFE6B00,
+                                                      ),
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                            12,
+                                                          ),
+                                                    ),
+                                                    child: const Icon(
+                                                      Icons.shopping_cart,
+                                                      color: Colors.white,
+                                                      size: 18,
+                                                    ),
+                                                  ),
+                                                ],
                                               ),
                                             ],
                                           ),
                                         ],
                                       ),
-                                    ],
-                                  ),
+                                    ),
+                                  ],
                                 ),
-                              ],
+                              ),
+                            );
+                          },
+                          childCount: filteredProducts.length,
+                        ), // Menggunakan filteredProducts.length
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              mainAxisSpacing: 16,
+                              crossAxisSpacing: 16,
+                              childAspectRatio:
+                                  0.52, // Sedikit disesuaikan agar text rating & category tidak meluap
                             ),
-                          ),
-                        );
-                      }, childCount: products.length),
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                            mainAxisSpacing: 16,
-                            crossAxisSpacing: 16,
-                            childAspectRatio: 0.45,
-                          ),
+                      ),
                     ),
-                  ),
                   const SliverToBoxAdapter(child: SizedBox(height: 92)),
                 ],
               ),
