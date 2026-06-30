@@ -5,7 +5,9 @@ Dio createDioClient() {
   final dio = Dio(
     BaseOptions(
       baseUrl: 'https://absensib1.mobileprojp.com',
+      // Increased timeouts to handle slower networks / server responses
       connectTimeout: const Duration(seconds: 15),
+      sendTimeout: const Duration(seconds: 15),
       receiveTimeout: const Duration(seconds: 15),
       headers: {'Accept': 'application/json'},
     ), // BaseOptions

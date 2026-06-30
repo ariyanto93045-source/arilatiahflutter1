@@ -10,26 +10,22 @@ UserModel _$UserModelFromJson(Map<String, dynamic> json) => UserModel(
   id: (json['id'] as num?)?.toInt(),
   name: json['name'] as String?,
   email: json['email'] as String?,
-  emailVerifiedAt: json['email_verified_at'],
-  createdAt: json['created_at'] == null
-      ? null
-      : DateTime.parse(json['created_at'] as String),
-  updatedAt: json['updated_at'] == null
-      ? null
-      : DateTime.parse(json['updated_at'] as String),
+  jenisKelamin: json['jenis_kelamin'] as String?,
+  batchId: (json['batch_id'] as num?)?.toInt(),
+  trainingId: (json['training_id'] as num?)?.toInt(),
   profilePhoto: json['profile_photo'] as String?,
-  profilePhotoUrl: json['profile_photo_url'] as String?,
-  photo: json['photo'] as String?,
+  createdAt: json['created_at'] as String?,
+  updatedAt: json['updated_at'] as String?,
 );
 
 Map<String, dynamic> _$UserModelToJson(UserModel instance) => <String, dynamic>{
   'id': instance.id,
   'name': instance.name,
   'email': instance.email,
-  'email_verified_at': instance.emailVerifiedAt,
-  'created_at': instance.createdAt?.toIso8601String(),
-  'updated_at': instance.updatedAt?.toIso8601String(),
+  'jenis_kelamin': instance.jenisKelamin,
+  'batch_id': instance.batchId,
+  'training_id': instance.trainingId,
   'profile_photo': instance.profilePhoto,
-  'profile_photo_url': instance.profilePhotoUrl,
-  'photo': instance.photo,
+  'created_at': instance.createdAt,
+  'updated_at': instance.updatedAt,
 };

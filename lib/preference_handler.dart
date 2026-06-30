@@ -17,4 +17,17 @@ class PreferenceHandler {
   static bool get isLogin {
     return _prefs.getBool("login") ?? false;
   }
+
+  // TOKEN
+  static Future setToken(String token) async {
+    await _prefs.setString("token", token);
+  }
+
+  static String? get token {
+    return _prefs.getString("token");
+  }
+
+  static Future removeToken() async {
+    await _prefs.remove("token");
+  }
 }
