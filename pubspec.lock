@@ -393,7 +393,7 @@ packages:
     source: hosted
     version: "0.1.1"
   geocoding:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
       name: geocoding
       sha256: "606be036287842d779d7ec4e2f6c9435fc29bbbd3c6da6589710f981d8852895"
@@ -425,7 +425,7 @@ packages:
     source: hosted
     version: "3.2.0"
   geolocator:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
       name: geolocator
       sha256: e146a6d63776582651e97a79cbe459f8e1211b100101fadcd84db83361fa599f
@@ -497,7 +497,7 @@ packages:
     source: hosted
     version: "8.2.0"
   google_maps_flutter:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
       name: google_maps_flutter
       sha256: f4040715c2998144a46cfc0fd91ee83226655af069dfed3d2b84552dc5e4facb

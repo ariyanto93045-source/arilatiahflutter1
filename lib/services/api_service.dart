@@ -6,6 +6,8 @@ import '../model/training_model.dart';
 import '../model/batch_model.dart';
 import '../model/auth_response.dart';
 import '../model/api_response.dart';
+import '../model/attendance_model.dart';
+import '../model/attendance_stats_model.dart';
 
 part 'api_service.g.dart';
 
@@ -39,4 +41,22 @@ abstract class ApiService {
 
   @GET('/api/batches')
   Future<ApiResponse<List<BatchModel>>> getBatches();
+
+  @POST('/api/absen/check-in')
+  Future<ApiResponse<AttendanceModel>> checkIn(@Body() Map<String, dynamic> body);
+
+  @POST('/api/absen/check-out')
+  Future<ApiResponse<AttendanceModel>> checkOut(@Body() Map<String, dynamic> body);
+
+  @GET('/api/absen/today')
+  Future<ApiResponse<AttendanceModel>> getTodayAttendance(@Query("attendance_date") String date);
+
+  @GET('/api/absen/stats')
+  Future<ApiResponse<AttendanceStatsModel>> getAttendanceStats();
+
+  @GET('/api/absen/history')
+  Future<ApiResponse<List<AttendanceModel>>> getAttendanceHistory();
+
+  @DELETE('/api/absen/{id}')
+  Future<ApiResponse<dynamic>> deleteAttendance(@Path("id") int id);
 }

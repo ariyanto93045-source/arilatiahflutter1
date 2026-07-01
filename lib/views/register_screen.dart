@@ -41,7 +41,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   Future<void> _fetchDropdownData() async {
     try {
       final apiService = ApiService(createDioClient(requireAuth: false));
-      
+
       final results = await Future.wait([
         apiService.getBatches().catchError((err) {
           debugPrint("Error fetching batches: $err");
@@ -185,7 +185,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             ),
             const SizedBox(height: 16),
             DropdownButtonFormField<String>(
-              value: _jenisKelamin,
+              initialValue: _jenisKelamin,
               decoration: const InputDecoration(labelText: "Jenis Kelamin"),
               items: const [
                 DropdownMenuItem(value: 'L', child: Text("Laki-laki")),
@@ -197,12 +197,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
             ),
             const SizedBox(height: 16),
             DropdownButtonFormField<int>(
-              value: _selectedBatchId,
+              initialValue: _selectedBatchId,
               decoration: const InputDecoration(labelText: "Batch"),
               items: _batches.map((b) {
                 return DropdownMenuItem<int>(
                   value: b.id,
-                  child: Text(b.title ?? (b.batchKe != null ? "Batch ${b.batchKe}" : null) ?? b.name ?? "Batch ${b.id}"),
+                  child: Text(
+                    b.title ??
+                        (b.batchKe != null ? "Batch ${b.batchKe}" : null) ??
+                        b.name ??
+                        "Batch ${b.id}",
+                  ),
                 );
               }).toList(),
               onChanged: (val) {
@@ -211,7 +216,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             ),
             const SizedBox(height: 16),
             DropdownButtonFormField<int>(
-              value: _selectedTrainingId,
+              initialValue: _selectedTrainingId,
               decoration: const InputDecoration(labelText: "Training"),
               items: _trainings.map((t) {
                 return DropdownMenuItem<int>(

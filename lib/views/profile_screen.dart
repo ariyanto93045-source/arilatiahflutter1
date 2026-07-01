@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../login_screen.dart';
+import '../main.dart';
 import '../preference_handler.dart';
 import '../model/user_model.dart';
 import '../services/api_service.dart';
@@ -319,6 +320,31 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 child: const Text(
                   "Update Profil",
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
+              ),
+            ),
+            const SizedBox(height: 24),
+            Card(
+              elevation: 1,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              clipBehavior: Clip.antiAlias,
+              child: Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [Colors.blue.shade50, Colors.white],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                ),
+                child: SwitchListTile(
+                  title: const Text("Mode Gelap (Dark Mode)", style: TextStyle(fontWeight: FontWeight.bold)),
+                  subtitle: const Text("Aktifkan tampilan mode gelap"),
+                  secondary: const Icon(Icons.dark_mode_outlined, color: Colors.blue),
+                  value: Theme.of(context).brightness == Brightness.dark,
+                  onChanged: (bool val) async {
+                    await PreferenceHandler.setDarkMode(val);
+                    themeNotifier.value = val ? ThemeMode.dark : ThemeMode.light;
+                  },
                 ),
               ),
             ),

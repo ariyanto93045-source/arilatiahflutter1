@@ -7,6 +7,8 @@ import '../model/training_model.dart';
 import '../services/api_service.dart';
 import '../services/dio_client.dart';
 import 'profile_screen.dart';
+import 'dashboard_tab.dart';
+import 'history_tab.dart';
 
 class MainNavigationScreen extends StatefulWidget {
   const MainNavigationScreen({super.key});
@@ -19,6 +21,8 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
   int _selectedIndex = 0;
 
   final List<Widget> _pages = [
+    const DashboardTab(),
+    const HistoryTab(),
     const PenggunaTab(),
     const BatchTab(),
     const ProfileScreen(),
@@ -45,6 +49,14 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
         unselectedItemColor: Colors.blue.shade300,
         type: BottomNavigationBarType.fixed,
         items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.dashboard_outlined),
+            label: 'Beranda',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.history),
+            label: 'Riwayat',
+          ),
           BottomNavigationBarItem(
             icon: Icon(Icons.people),
             label: 'Pengguna',

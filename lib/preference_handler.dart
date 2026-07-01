@@ -30,4 +30,13 @@ class PreferenceHandler {
   static Future removeToken() async {
     await _prefs.remove("token");
   }
+
+  // THEME MODE
+  static Future setDarkMode(bool value) async {
+    await _prefs.setBool("dark_mode", value);
+  }
+
+  static bool get isDarkMode {
+    return _prefs.getBool("dark_mode") ?? false;
+  }
 }
