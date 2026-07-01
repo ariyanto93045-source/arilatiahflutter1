@@ -8,7 +8,7 @@ part of 'training_model.dart';
 
 TrainingModel _$TrainingModelFromJson(Map<String, dynamic> json) =>
     TrainingModel(
-      id: (json['id'] as num?)?.toInt(),
+      id: _intFromJson(json['id']),
       title: json['title'] as String?,
       name: json['name'] as String?,
     );

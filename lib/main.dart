@@ -1,6 +1,6 @@
 import 'package:arilatiahflutter1/login_screen.dart';
-import 'package:arilatiahflutter1/homescreen.dart';
 import 'package:arilatiahflutter1/preference_handler.dart';
+import 'package:arilatiahflutter1/views/main_navigation_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
@@ -65,7 +65,7 @@ class _AuthGateState extends State<AuthGate> {
         }
 
         if (snapshot.data == true) {
-          return const HomeScreen();
+          return const MainNavigationScreen();
         }
 
         return const LoginScreen();

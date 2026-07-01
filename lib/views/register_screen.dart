@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../model/api_response.dart';
 import '../model/batch_model.dart';
 import '../model/training_model.dart';
 import '../services/api_service.dart';
@@ -39,9 +40,21 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   Future<void> _fetchDropdownData() async {
     try {
-      final apiService = ApiService(createDioClient());
-      final batchRes = await apiService.getBatches();
-      final trainRes = await apiService.getTrainings();
+      final apiService = ApiService(createDioClient(requireAuth: false));
+      
+      final results = await Future.wait([
+        apiService.getBatches().catchError((err) {
+          debugPrint("Error fetching batches: $err");
+          return ApiResponse<List<BatchModel>>(data: []);
+        }),
+        apiService.getTrainings().catchError((err) {
+          debugPrint("Error fetching trainings: $err");
+          return ApiResponse<List<TrainingModel>>(data: []);
+        }),
+      ]);
+
+      final batchRes = results[0] as ApiResponse<List<BatchModel>>;
+      final trainRes = results[1] as ApiResponse<List<TrainingModel>>;
 
       if (mounted) {
         setState(() {
@@ -53,10 +66,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
         });
       }
     } catch (e) {
+      debugPrint("Exception in _fetchDropdownData: $e");
       if (mounted) {
         setState(() => _isFetchingData = false);
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Gagal mengambil data batch/training")),
+          const SnackBar(content: Text("Gagal mengambil data batch/training")),
         );
       }
     }
@@ -82,7 +96,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   Future<void> _register() async {
     setState(() => _isLoading = true);
     try {
-      final apiService = ApiService(createDioClient());
+      final apiService = ApiService(createDioClient(requireAuth: false));
       final response = await apiService.register({
         'name': _nameCtrl.text,
         'email': _emailCtrl.text,
@@ -188,7 +202,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               items: _batches.map((b) {
                 return DropdownMenuItem<int>(
                   value: b.id,
-                  child: Text(b.title ?? b.name ?? "Batch ${b.id}"),
+                  child: Text(b.title ?? (b.batchKe != null ? "Batch ${b.batchKe}" : null) ?? b.name ?? "Batch ${b.id}"),
                 );
               }).toList(),
               onChanged: (val) {

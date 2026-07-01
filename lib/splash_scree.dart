@@ -3,9 +3,9 @@ import 'dart:async';
 import 'package:arilatiahflutter1/extension/navigator.dart';
 import 'package:flutter/material.dart';
 
-import 'homescreen.dart';
-import 'login_screen.dart';
-import 'preference_handler.dart';
+import 'package:arilatiahflutter1/login_screen.dart';
+import 'package:arilatiahflutter1/preference_handler.dart';
+import 'package:arilatiahflutter1/views/main_navigation_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -22,12 +22,12 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<void> _checkLoginStatus() async {
-    await Future.delayed(Duration(seconds: 3));
+    await Future.delayed(const Duration(seconds: 3));
     if (!mounted) return;
     if (PreferenceHandler.isLogin) {
-      context.pushAndRemoveAll(HomeScreen());
+      context.pushAndRemoveAll(const MainNavigationScreen());
     } else {
-      context.pushAndRemoveAll(LoginScreen());
+      context.pushAndRemoveAll(const LoginScreen());
     }
   }
 
@@ -63,7 +63,7 @@ class _SplashScreenState extends State<SplashScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             // GAMBAR
-            Image.asset('assetimage/image/mouse.jpg', width: 150),
+            Image.asset('assetimage/image/logo ppkd 3.png', width: 150),
 
             const SizedBox(height: 20),
 

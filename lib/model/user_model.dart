@@ -2,16 +2,24 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'user_model.g.dart';
 
+int? _intFromJson(dynamic json) {
+  if (json == null) return null;
+  if (json is num) return json.toInt();
+  if (json is String) return int.tryParse(json);
+  return null;
+}
+
 @JsonSerializable()
 class UserModel {
+  @JsonKey(fromJson: _intFromJson)
   final int? id;
   final String? name;
   final String? email;
   @JsonKey(name: 'jenis_kelamin')
   final String? jenisKelamin;
-  @JsonKey(name: 'batch_id')
+  @JsonKey(name: 'batch_id', fromJson: _intFromJson)
   final int? batchId;
-  @JsonKey(name: 'training_id')
+  @JsonKey(name: 'training_id', fromJson: _intFromJson)
   final int? trainingId;
   @JsonKey(name: 'profile_photo')
   final String? profilePhoto;
