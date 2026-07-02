@@ -25,6 +25,13 @@ class _DashboardTabState extends State<DashboardTab> {
   String? _errorMsg;
 
   Position? _currentPosition;
+  GoogleMapController? _mapController;
+  bool _useSimulatedLocation = false;
+  double? _distanceToPPKD;
+
+  static const double ppkdLatitude = -6.2114;
+  static const double ppkdLongitude = 106.8189;
+  static const String ppkdAddress = "PPKD Jakarta Pusat, Jl. Karet Pasar Baru Barat V No. 23, Karet Tengsin, Tanah Abang, Jakarta Pusat";
 
   @override
   void initState() {
@@ -39,11 +46,122 @@ class _DashboardTabState extends State<DashboardTab> {
       if (pos != null && mounted) {
         setState(() {
           _currentPosition = pos;
+          _calculateDistance();
         });
       }
     } catch (e) {
       debugPrint("Error determining location: $e");
     }
+  }
+
+  void _calculateDistance() {
+    if (_currentPosition != null) {
+      setState(() {
+        _distanceToPPKD = Geolocator.distanceBetween(
+          _currentPosition!.latitude,
+          _currentPosition!.longitude,
+          ppkdLatitude,
+          ppkdLongitude,
+        );
+      });
+    }
+  }
+
+  Set<Marker> _getMarkers() {
+    final Set<Marker> markers = {};
+    if (_currentPosition != null) {
+      markers.add(
+        Marker(
+          markerId: const MarkerId('my_location'),
+          position: _useSimulatedLocation
+              ? const LatLng(ppkdLatitude, ppkdLongitude)
+              : LatLng(_currentPosition!.latitude, _currentPosition!.longitude),
+          infoWindow: InfoWindow(title: _useSimulatedLocation ? "Lokasi Saya (Simulasi)" : "Lokasi Saya"),
+          icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
+        ),
+      );
+    }
+    
+    markers.add(
+      const Marker(
+        markerId: MarkerId('ppkd_location'),
+        position: LatLng(ppkdLatitude, ppkdLongitude),
+        infoWindow: InfoWindow(title: "PPKD Jakarta Pusat", snippet: ppkdAddress),
+      ),
+    );
+    return markers;
+  }
+
+  Set<Circle> _getCircles() {
+    return {
+      Circle(
+        circleId: const CircleId('ppkd_radius'),
+        center: const LatLng(ppkdLatitude, ppkdLongitude),
+        radius: 100, // 100 meters geofence radius
+        fillColor: Colors.blue.withOpacity(0.15),
+        strokeColor: Colors.blue.shade700,
+        strokeWidth: 2,
+      ),
+    };
+  }
+
+  void _showGeofenceErrorDialog(double distance) {
+    String distanceStr = distance > 1000 
+        ? "${(distance / 1000).toStringAsFixed(2)} km" 
+        : "${distance.toStringAsFixed(1)} meter";
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: Row(
+          children: const [
+            Icon(Icons.gpp_bad, color: Colors.red, size: 28),
+            SizedBox(width: 8),
+            Text("Di Luar Area Absensi", style: TextStyle(fontWeight: FontWeight.bold)),
+          ],
+        ),
+        content: Text(
+          "Anda berada di luar radius PPKD Jakarta Pusat.\n\n"
+          "Jarak Anda saat ini: $distanceStr.\n"
+          "Radius maksimal untuk absen: 100 meter.\n\n"
+          "Silakan mendekat ke lokasi PPKD Jakarta Pusat atau aktifkan opsi 'Simulasi Lokasi PPKD' untuk keperluan uji coba.",
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text("Tutup"),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.blue.shade700,
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+              setState(() {
+                _useSimulatedLocation = true;
+              });
+              if (_mapController != null) {
+                _mapController!.animateCamera(
+                  CameraUpdate.newLatLngZoom(
+                    const LatLng(ppkdLatitude, ppkdLongitude),
+                    16.5,
+                  ),
+                );
+              }
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text("Simulasi Lokasi PPKD Jakarta Pusat diaktifkan."),
+                  backgroundColor: Colors.blue,
+                ),
+              );
+            },
+            child: const Text("Aktifkan Simulasi"),
+          ),
+        ],
+      ),
+    );
   }
 
   Future<String> _getAddressFromLatLng(double lat, double lng) async {
@@ -161,22 +279,48 @@ class _DashboardTabState extends State<DashboardTab> {
     setState(() => _isLoading = true);
 
     try {
-      final pos = await _getCurrentLocation();
-      if (pos == null) {
-        setState(() => _isLoading = false);
-        return;
+      double checkInLat;
+      double checkInLng;
+      String address;
+
+      if (_useSimulatedLocation) {
+        checkInLat = ppkdLatitude;
+        checkInLng = ppkdLongitude;
+        address = ppkdAddress;
+      } else {
+        final pos = await _getCurrentLocation();
+        if (pos == null) {
+          setState(() => _isLoading = false);
+          return;
+        }
+        checkInLat = pos.latitude;
+        checkInLng = pos.longitude;
+        address = await _getAddressFromLatLng(pos.latitude, pos.longitude);
+
+        if (status == "masuk") {
+          final distance = Geolocator.distanceBetween(
+            checkInLat,
+            checkInLng,
+            ppkdLatitude,
+            ppkdLongitude,
+          );
+          if (distance > 100) {
+            setState(() => _isLoading = false);
+            _showGeofenceErrorDialog(distance);
+            return;
+          }
+        }
       }
 
       final todayDateStr = DateFormat('yyyy-MM-dd').format(DateTime.now());
       final nowTimeStr = DateFormat('HH:mm').format(DateTime.now());
-      final address = await _getAddressFromLatLng(pos.latitude, pos.longitude);
 
       final apiService = ApiService(createDioClient());
       final response = await apiService.checkIn({
         'attendance_date': todayDateStr,
         'check_in': nowTimeStr,
-        'check_in_lat': pos.latitude,
-        'check_in_lng': pos.longitude,
+        'check_in_lat': checkInLat,
+        'check_in_lng': checkInLng,
         'check_in_address': address,
         'status': status,
         'alasan_izin': alasan,
@@ -214,22 +358,46 @@ class _DashboardTabState extends State<DashboardTab> {
     setState(() => _isLoading = true);
 
     try {
-      final pos = await _getCurrentLocation();
-      if (pos == null) {
-        setState(() => _isLoading = false);
-        return;
+      double checkOutLat;
+      double checkOutLng;
+      String address;
+
+      if (_useSimulatedLocation) {
+        checkOutLat = ppkdLatitude;
+        checkOutLng = ppkdLongitude;
+        address = ppkdAddress;
+      } else {
+        final pos = await _getCurrentLocation();
+        if (pos == null) {
+          setState(() => _isLoading = false);
+          return;
+        }
+        checkOutLat = pos.latitude;
+        checkOutLng = pos.longitude;
+        address = await _getAddressFromLatLng(pos.latitude, pos.longitude);
+
+        final distance = Geolocator.distanceBetween(
+          checkOutLat,
+          checkOutLng,
+          ppkdLatitude,
+          ppkdLongitude,
+        );
+        if (distance > 100) {
+          setState(() => _isLoading = false);
+          _showGeofenceErrorDialog(distance);
+          return;
+        }
       }
 
       final todayDateStr = DateFormat('yyyy-MM-dd').format(DateTime.now());
       final nowTimeStr = DateFormat('HH:mm').format(DateTime.now());
-      final address = await _getAddressFromLatLng(pos.latitude, pos.longitude);
 
       final apiService = ApiService(createDioClient());
       final response = await apiService.checkOut({
         'attendance_date': todayDateStr,
         'check_out': nowTimeStr,
-        'check_out_lat': pos.latitude,
-        'check_out_lng': pos.longitude,
+        'check_out_lat': checkOutLat,
+        'check_out_lng': checkOutLng,
         'check_out_address': address,
       });
 
@@ -549,21 +717,129 @@ class _DashboardTabState extends State<DashboardTab> {
                       )
                     : GoogleMap(
                         initialCameraPosition: CameraPosition(
-                          target: LatLng(_currentPosition!.latitude, _currentPosition!.longitude),
-                          zoom: 15,
+                          target: _useSimulatedLocation
+                              ? const LatLng(ppkdLatitude, ppkdLongitude)
+                              : LatLng(_currentPosition!.latitude, _currentPosition!.longitude),
+                          zoom: 16.5,
                         ),
-                        markers: {
-                          Marker(
-                            markerId: const MarkerId('my_location'),
-                            position: LatLng(_currentPosition!.latitude, _currentPosition!.longitude),
-                            infoWindow: const InfoWindow(title: "Lokasi Saya"),
-                          ),
-                        },
+                        onMapCreated: (controller) => _mapController = controller,
+                        markers: _getMarkers(),
+                        circles: _getCircles(),
                         myLocationEnabled: true,
                         myLocationButtonEnabled: false,
                         zoomControlsEnabled: false,
                       ),
               ),
+              const SizedBox(height: 12),
+              // Geofence Info & Simulation Control Card
+              if (_currentPosition != null) ...[
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  decoration: BoxDecoration(
+                    color: isDark ? Colors.grey.shade900 : Colors.blue.shade50.withOpacity(0.5),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: _useSimulatedLocation
+                          ? Colors.blue.shade300
+                          : (_distanceToPPKD != null && _distanceToPPKD! <= 100)
+                              ? Colors.green.shade300
+                              : Colors.orange.shade300,
+                    ),
+                  ),
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          Icon(
+                            _useSimulatedLocation
+                                ? Icons.gps_fixed_outlined
+                                : (_distanceToPPKD != null && _distanceToPPKD! <= 100)
+                                    ? Icons.verified
+                                    : Icons.warning_amber_rounded,
+                            color: _useSimulatedLocation
+                                ? Colors.blue.shade800
+                                : (_distanceToPPKD != null && _distanceToPPKD! <= 100)
+                                    ? Colors.green.shade800
+                                    : Colors.orange.shade800,
+                          ),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  _useSimulatedLocation
+                                      ? "Simulasi Lokasi PPKD Aktif"
+                                      : (_distanceToPPKD != null && _distanceToPPKD! <= 100)
+                                          ? "Anda Berada di Area PPKD"
+                                          : "Di Luar Area PPKD Jakarta Pusat",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 14,
+                                    color: _useSimulatedLocation
+                                        ? Colors.blue.shade900
+                                        : (_distanceToPPKD != null && _distanceToPPKD! <= 100)
+                                            ? Colors.green.shade900
+                                            : Colors.orange.shade900,
+                                  ),
+                                ),
+                                const SizedBox(height: 2),
+                                Text(
+                                  _useSimulatedLocation
+                                      ? "Menggunakan titik koordinat PPKD Jakarta Pusat."
+                                      : "Jarak ke PPKD: ${_distanceToPPKD != null ? (_distanceToPPKD! > 1000 ? '${(_distanceToPPKD! / 1000).toStringAsFixed(2)} km' : '${_distanceToPPKD!.toStringAsFixed(1)} m') : 'Menghitung...'} (Maks 100 m)",
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: isDark ? Colors.grey.shade400 : Colors.black87,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                      const Divider(height: 16),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text(
+                            "Simulasikan Lokasi PPKD (Uji Coba)",
+                            style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500),
+                          ),
+                          Switch(
+                            value: _useSimulatedLocation,
+                            activeColor: Colors.blue.shade700,
+                            onChanged: (value) {
+                              setState(() {
+                                _useSimulatedLocation = value;
+                              });
+                              if (_mapController != null) {
+                                final targetLat = value ? ppkdLatitude : _currentPosition!.latitude;
+                                final targetLng = value ? ppkdLongitude : _currentPosition!.longitude;
+                                _mapController!.animateCamera(
+                                  CameraUpdate.newLatLngZoom(
+                                    LatLng(targetLat, targetLng),
+                                    16.5,
+                                  ),
+                                );
+                              }
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(value
+                                      ? "Simulasi Lokasi PPKD Jakarta Pusat diaktifkan."
+                                      : "Menggunakan lokasi GPS asli perangkat."),
+                                  duration: const Duration(seconds: 2),
+                                  backgroundColor: value ? Colors.blue : Colors.grey.shade800,
+                                ),
+                              );
+                            },
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ],
               const SizedBox(height: 28),
 
               // Today's Attendance Cards

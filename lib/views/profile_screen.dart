@@ -6,8 +6,8 @@ import 'package:image_picker/image_picker.dart';
 
 import '../login_screen.dart';
 import '../main.dart';
-import '../preference_handler.dart';
 import '../model/user_model.dart';
+import '../preference_handler.dart';
 import '../services/api_service.dart';
 import '../services/dio_client.dart';
 
@@ -57,10 +57,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         final data = e.response?.data;
         errorMsg = data?['message'] ?? e.message ?? errorMsg;
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(errorMsg),
-            backgroundColor: Colors.red,
-          ),
+          SnackBar(content: Text(errorMsg), backgroundColor: Colors.red),
         );
       }
     } catch (e) {
@@ -83,7 +80,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       );
       return;
     }
-    
+
     setState(() => _isLoading = true);
     try {
       final apiService = ApiService(createDioClient());
@@ -93,7 +90,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
       });
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(response.message ?? "Profil berhasil diperbarui")),
+          SnackBar(
+            content: Text(response.message ?? "Profil berhasil diperbarui"),
+          ),
         );
         _fetchProfile(); // refresh
       }
@@ -202,6 +201,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     if (_isLoading) {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
@@ -236,27 +237,49 @@ class _ProfileScreenState extends State<ProfileScreen> {
         child: Column(
           children: [
             (() {
-              final imgProvider = (_user?.profilePhoto != null && _user!.profilePhoto!.isNotEmpty)
+              final imgProvider =
+                  (_user?.profilePhoto != null &&
+                      _user!.profilePhoto!.isNotEmpty)
                   ? _getProfileImage(_user!.profilePhoto!)
                   : null;
               return CircleAvatar(
                 radius: 50,
                 backgroundImage: imgProvider,
-                child: imgProvider == null ? const Icon(Icons.person, size: 50) : null,
+                child: imgProvider == null
+                    ? const Icon(Icons.person, size: 50)
+                    : null,
               );
             })(),
             TextButton(
-              onPressed: _updatePhoto, 
+              onPressed: _updatePhoto,
               child: Text(
-                "Ubah Foto", 
-                style: TextStyle(color: Colors.blue.shade700, fontWeight: FontWeight.bold),
+                "Ubah Foto",
+                style: TextStyle(
+                  color: isDark ? Colors.blue.shade300 : Colors.blue.shade700,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
             const SizedBox(height: 16),
+            // Nama Field Label & Input
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                "Nama",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 14,
+                  color: isDark ? Colors.blue.shade300 : Colors.blue.shade800,
+                ),
+              ),
+            ),
+            const SizedBox(height: 8),
             Container(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [Colors.blue.shade50, Colors.white],
+                  colors: isDark
+                      ? [Colors.grey.shade900, Colors.grey.shade800]
+                      : [Colors.blue.shade50, Colors.white],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
@@ -264,24 +287,58 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
               child: TextField(
                 controller: _nameCtrl,
+                style: TextStyle(color: isDark ? Colors.white : Colors.black87),
                 decoration: InputDecoration(
-                  labelText: "Nama",
-                  prefixIcon: const Icon(Icons.person_outline, color: Colors.blue),
+                  hintText: "Masukkan nama Anda",
+                  hintStyle: TextStyle(
+                    color: isDark ? Colors.grey.shade500 : Colors.grey.shade600,
+                    fontSize: 14,
+                  ),
+                  prefixIcon: const Icon(
+                    Icons.person_outline,
+                    color: Colors.blue,
+                  ),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(
+                      color: isDark
+                          ? Colors.grey.shade700
+                          : Colors.blue.shade200,
+                    ),
+                  ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: Colors.blue.shade700, width: 2),
+                    borderSide: BorderSide(
+                      color: Colors.blue.shade700,
+                      width: 2,
+                    ),
                   ),
                 ),
               ),
             ),
             const SizedBox(height: 16),
+            // Email Field Label & Input
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                "Email",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 14,
+                  color: isDark ? Colors.blue.shade300 : Colors.blue.shade800,
+                ),
+              ),
+            ),
+            const SizedBox(height: 8),
             Container(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [Colors.blue.shade50, Colors.white],
+                  colors: isDark
+                      ? [Colors.grey.shade900, Colors.grey.shade800]
+                      : [Colors.blue.shade50, Colors.white],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
@@ -289,15 +346,34 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
               child: TextField(
                 controller: _emailCtrl,
+                style: TextStyle(color: isDark ? Colors.white : Colors.black87),
                 decoration: InputDecoration(
-                  labelText: "Email",
-                  prefixIcon: const Icon(Icons.email_outlined, color: Colors.blue),
+                  hintText: "Masukkan email Anda",
+                  hintStyle: TextStyle(
+                    color: isDark ? Colors.grey.shade500 : Colors.grey.shade600,
+                    fontSize: 14,
+                  ),
+                  prefixIcon: const Icon(
+                    Icons.email_outlined,
+                    color: Colors.blue,
+                  ),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(
+                      color: isDark
+                          ? Colors.grey.shade700
+                          : Colors.blue.shade200,
+                    ),
+                  ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(color: Colors.blue.shade700, width: 2),
+                    borderSide: BorderSide(
+                      color: Colors.blue.shade700,
+                      width: 2,
+                    ),
                   ),
                 ),
                 keyboardType: TextInputType.emailAddress,
@@ -326,24 +402,36 @@ class _ProfileScreenState extends State<ProfileScreen> {
             const SizedBox(height: 24),
             Card(
               elevation: 1,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
               clipBehavior: Clip.antiAlias,
               child: Container(
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
-                    colors: [Colors.blue.shade50, Colors.white],
+                    colors: isDark
+                        ? [Colors.grey.shade900, Colors.grey.shade800]
+                        : [Colors.blue.shade50, Colors.white],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
                 ),
                 child: SwitchListTile(
-                  title: const Text("Mode Gelap (Dark Mode)", style: TextStyle(fontWeight: FontWeight.bold)),
+                  title: const Text(
+                    "Mode Gelap (Dark Mode)",
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
                   subtitle: const Text("Aktifkan tampilan mode gelap"),
-                  secondary: const Icon(Icons.dark_mode_outlined, color: Colors.blue),
+                  secondary: const Icon(
+                    Icons.dark_mode_outlined,
+                    color: Colors.blue,
+                  ),
                   value: Theme.of(context).brightness == Brightness.dark,
                   onChanged: (bool val) async {
                     await PreferenceHandler.setDarkMode(val);
-                    themeNotifier.value = val ? ThemeMode.dark : ThemeMode.light;
+                    themeNotifier.value = val
+                        ? ThemeMode.dark
+                        : ThemeMode.light;
                   },
                 ),
               ),
@@ -363,11 +451,23 @@ ImageProvider? _getProfileImage(String? photoPath) {
   // Clean localhost/127.0.0.1 in URLs
   var cleanPath = photoPath;
   if (cleanPath.contains('127.0.0.1:8000')) {
-    cleanPath = cleanPath.replaceAll('http://127.0.0.1:8000', 'https://appabsensi.mobileprojp.com');
+    cleanPath = cleanPath.replaceAll(
+      'http://127.0.0.1:8000',
+      'https://appabsensi.mobileprojp.com',
+    );
   } else if (cleanPath.contains('localhost')) {
-    cleanPath = cleanPath.replaceAll('http://localhost:8000', 'https://appabsensi.mobileprojp.com');
-    cleanPath = cleanPath.replaceAll('https://localhost:8000', 'https://appabsensi.mobileprojp.com');
-    cleanPath = cleanPath.replaceAll('http://localhost', 'https://appabsensi.mobileprojp.com');
+    cleanPath = cleanPath.replaceAll(
+      'http://localhost:8000',
+      'https://appabsensi.mobileprojp.com',
+    );
+    cleanPath = cleanPath.replaceAll(
+      'https://localhost:8000',
+      'https://appabsensi.mobileprojp.com',
+    );
+    cleanPath = cleanPath.replaceAll(
+      'http://localhost',
+      'https://appabsensi.mobileprojp.com',
+    );
   }
 
   if (cleanPath.startsWith('http://') || cleanPath.startsWith('https://')) {

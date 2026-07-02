@@ -328,12 +328,14 @@ class _PenggunaTabState extends State<PenggunaTab> {
           return name.contains(query) || email.contains(query);
         }).toList();
 
+        final isDark = Theme.of(context).brightness == Brightness.dark;
         return Column(
           children: [
             Padding(
               padding: const EdgeInsets.fromLTRB(12, 12, 12, 4),
               child: TextField(
                 controller: _searchCtrl,
+                style: TextStyle(color: isDark ? Colors.white : Colors.black87),
                 onChanged: (val) {
                   setState(() {
                     _searchQuery = val;
@@ -341,6 +343,7 @@ class _PenggunaTabState extends State<PenggunaTab> {
                 },
                 decoration: InputDecoration(
                   hintText: "Cari nama atau email...",
+                  hintStyle: TextStyle(color: isDark ? Colors.grey.shade400 : Colors.grey.shade600),
                   prefixIcon: const Icon(Icons.search, color: Colors.blue),
                   suffixIcon: _searchQuery.isNotEmpty
                       ? IconButton(
@@ -354,7 +357,7 @@ class _PenggunaTabState extends State<PenggunaTab> {
                         )
                       : null,
                   filled: true,
-                  fillColor: Colors.blue.shade50,
+                  fillColor: isDark ? Colors.grey.shade900 : Colors.blue.shade50,
                   contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 16),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(30),
@@ -382,7 +385,7 @@ class _PenggunaTabState extends State<PenggunaTab> {
                           final batchText = userBatch != null 
                               ? (userBatch.batchKe != null ? "Batch ${userBatch.batchKe}" : userBatch.title ?? userBatch.name ?? "Batch ${userBatch.id}") 
                               : "Belum masuk Batch";
-
+ 
                           return Card(
                             margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                             elevation: 1,
@@ -391,7 +394,9 @@ class _PenggunaTabState extends State<PenggunaTab> {
                             child: Container(
                               decoration: BoxDecoration(
                                 gradient: LinearGradient(
-                                  colors: [Colors.blue.shade50, Colors.white],
+                                  colors: isDark
+                                      ? [const Color(0xFF1E293B), const Color(0xFF0F172A)]
+                                      : [Colors.blue.shade50, Colors.white],
                                   begin: Alignment.topLeft,
                                   end: Alignment.bottomRight,
                                 ),
@@ -402,18 +407,31 @@ class _PenggunaTabState extends State<PenggunaTab> {
                                   backgroundImage: imgProvider,
                                   child: imgProvider == null ? const Icon(Icons.person) : null,
                                 ),
-                                title: Text(user.name ?? '-', style: const TextStyle(fontWeight: FontWeight.bold)),
+                                title: Text(
+                                  user.name ?? '-', 
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: isDark ? Colors.white : Colors.black87,
+                                  ),
+                                ),
                                 subtitle: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(user.email ?? '-'),
+                                    Text(
+                                      user.email ?? '-',
+                                      style: TextStyle(
+                                        color: isDark ? Colors.grey.shade400 : Colors.grey.shade700,
+                                      ),
+                                    ),
                                     const SizedBox(height: 2),
                                     Text(
                                       batchText, 
                                       style: TextStyle(
                                         fontSize: 12, 
-                                        color: userBatch != null ? Colors.blue.shade600 : Colors.grey,
-                                        fontWeight: userBatch != null ? FontWeight.w600 : FontWeight.normal
+                                        color: userBatch != null 
+                                            ? (isDark ? Colors.blue.shade300 : Colors.blue.shade700) 
+                                            : (isDark ? Colors.grey.shade500 : Colors.grey),
+                                        fontWeight: userBatch != null ? FontWeight.w600 : FontWeight.normal,
                                       )
                                     ),
                                   ],
@@ -421,13 +439,23 @@ class _PenggunaTabState extends State<PenggunaTab> {
                                 trailing: Container(
                                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                                   decoration: BoxDecoration(
-                                    color: user.jenisKelamin == 'L' ? Colors.blue.shade100 : Colors.pink.shade100,
+                                    color: user.jenisKelamin == 'L' 
+                                        ? (isDark ? Colors.blue.shade900.withOpacity(0.4) : Colors.blue.shade100) 
+                                        : (isDark ? Colors.pink.shade900.withOpacity(0.4) : Colors.pink.shade100),
                                     borderRadius: BorderRadius.circular(12),
+                                    border: Border.all(
+                                      color: user.jenisKelamin == 'L' 
+                                          ? (isDark ? Colors.blue.shade700 : Colors.blue.shade200) 
+                                          : (isDark ? Colors.pink.shade700 : Colors.pink.shade200),
+                                      width: 1,
+                                    ),
                                   ),
                                   child: Text(
                                     user.jenisKelamin == 'L' ? "Laki-laki" : "Perempuan",
                                     style: TextStyle(
-                                      color: user.jenisKelamin == 'L' ? Colors.blue.shade900 : Colors.pink.shade900,
+                                      color: user.jenisKelamin == 'L' 
+                                          ? (isDark ? Colors.blue.shade200 : Colors.blue.shade900) 
+                                          : (isDark ? Colors.pink.shade200 : Colors.pink.shade900),
                                       fontSize: 11,
                                       fontWeight: FontWeight.w600,
                                     ),
@@ -523,6 +551,7 @@ class _BatchTabState extends State<BatchTab> {
               itemCount: batches.length,
               itemBuilder: (context, index) {
                 final batch = batches[index];
+                final isDark = Theme.of(context).brightness == Brightness.dark;
                 return Card(
                   margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                   elevation: 2,
@@ -531,7 +560,9 @@ class _BatchTabState extends State<BatchTab> {
                   child: Container(
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
-                        colors: [Colors.blue.shade50, Colors.white],
+                        colors: isDark
+                            ? [const Color(0xFF1E293B), const Color(0xFF0F172A)]
+                            : [Colors.blue.shade50, Colors.white],
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                       ),
@@ -545,33 +576,44 @@ class _BatchTabState extends State<BatchTab> {
                           children: [
                             Text(
                               batch.title ?? (batch.batchKe != null ? "Batch ${batch.batchKe}" : null) ?? batch.name ?? "Batch ${batch.id}",
-                              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                              style: TextStyle(
+                                fontSize: 18, 
+                                fontWeight: FontWeight.bold,
+                                color: isDark ? Colors.white : Colors.black87,
+                              ),
                             ),
                             Container(
                               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                               decoration: BoxDecoration(
-                                color: Colors.blue.shade100,
+                                color: isDark ? Colors.blue.shade900.withOpacity(0.4) : Colors.blue.shade100,
                                 borderRadius: BorderRadius.circular(12),
+                                border: isDark ? Border.all(color: Colors.blue.shade700) : null,
                               ),
                               child: Text(
                                 "ID: ${batch.id}",
-                                style: TextStyle(color: Colors.blue.shade800, fontWeight: FontWeight.bold),
+                                style: TextStyle(
+                                  color: isDark ? Colors.blue.shade200 : Colors.blue.shade800, 
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                             ),
                           ],
                         ),
                         const SizedBox(height: 8),
-                        const Divider(),
+                        Divider(color: isDark ? Colors.white12 : Colors.grey.shade300),
                         const SizedBox(height: 8),
                         Row(
                           children: [
-                            const Icon(Icons.calendar_today_outlined, size: 16, color: Colors.grey),
+                            Icon(Icons.calendar_today_outlined, size: 16, color: isDark ? Colors.grey.shade400 : Colors.grey),
                             const SizedBox(width: 8),
-                            const Text("Periode:", style: TextStyle(color: Colors.grey)),
+                            Text("Periode:", style: TextStyle(color: isDark ? Colors.grey.shade400 : Colors.grey)),
                             const SizedBox(width: 8),
                             Text(
                               "${batch.startDate ?? '-'} s/d ${batch.endDate ?? '-'}",
-                              style: const TextStyle(fontWeight: FontWeight.w500),
+                              style: TextStyle(
+                                fontWeight: FontWeight.w500,
+                                color: isDark ? Colors.white70 : Colors.black87,
+                              ),
                             ),
                           ],
                         ),

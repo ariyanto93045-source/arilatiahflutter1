@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:geolocator/geolocator.dart';
 
 import '../model/attendance_model.dart';
 import '../services/api_service.dart';
@@ -143,6 +144,33 @@ class _HistoryTabState extends State<HistoryTab> {
     }
   }
 
+  String _formatAddress(String? address, double? lat, double? lng) {
+    if (address == null || address.isEmpty) return '-';
+    final lowerAddress = address.toLowerCase();
+    
+    // Check if it's the default emulator Google address (Mountain View/Amphitheatre)
+    if (lowerAddress.contains("mountain view") || 
+        lowerAddress.contains("amphitheatre") ||
+        lowerAddress.contains("1600 amphitheatre") ||
+        (lat != null && lat.toStringAsFixed(3) == "37.422")) {
+      return "PPKD Jakarta Pusat (Simulasi)";
+    }
+    
+    // If within 150m of PPKD Jakarta Pusat, force prefixing "PPKD Jakarta Pusat"
+    if (lat != null && lng != null) {
+      final distance = Geolocator.distanceBetween(
+        lat,
+        lng,
+        -6.2114,
+        106.8189,
+      );
+      if (distance <= 150) {
+        return "PPKD Jakarta Pusat, $address";
+      }
+    }
+    return address;
+  }
+
   @override
   Widget build(BuildContext context) {
     if (_isLoading) {
@@ -193,6 +221,7 @@ class _HistoryTabState extends State<HistoryTab> {
                 padding: const EdgeInsets.symmetric(vertical: 8),
                 itemCount: _history.length,
                 itemBuilder: (context, index) {
+                  final isDark = Theme.of(context).brightness == Brightness.dark;
                   final attendance = _history[index];
                   final formattedDate = _formatDate(attendance.attendanceDate);
 
@@ -219,8 +248,12 @@ class _HistoryTabState extends State<HistoryTab> {
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           colors: isIzin
-                              ? [Colors.orange.shade50, Colors.white]
-                              : [Colors.blue.shade50, Colors.white],
+                              ? (isDark
+                                  ? [const Color(0xFF2D1F10), const Color(0xFF1F150A)]
+                                  : [Colors.orange.shade50, Colors.white])
+                              : (isDark
+                                  ? [const Color(0xFF1E293B), const Color(0xFF0F172A)]
+                                  : [Colors.blue.shade50, Colors.white]),
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
                         ),
@@ -236,9 +269,10 @@ class _HistoryTabState extends State<HistoryTab> {
                                 isIzin
                                     ? "Tanggal Izin: $formattedDate"
                                     : formattedDate,
-                                style: const TextStyle(
+                                style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
+                                  color: isDark ? Colors.white : Colors.black87,
                                 ),
                               ),
                               Row(
@@ -251,16 +285,19 @@ class _HistoryTabState extends State<HistoryTab> {
                                       ),
                                       decoration: BoxDecoration(
                                         color: isSakit
-                                            ? Colors.red.shade100
-                                            : Colors.orange.shade100,
+                                            ? (isDark ? Colors.red.shade900.withOpacity(0.4) : Colors.red.shade100)
+                                            : (isDark ? Colors.orange.shade900.withOpacity(0.4) : Colors.orange.shade100),
                                         borderRadius: BorderRadius.circular(12),
+                                        border: isDark ? Border.all(
+                                          color: isSakit ? Colors.red.shade700 : Colors.orange.shade700,
+                                        ) : null,
                                       ),
                                       child: Text(
                                         isSakit ? "Sakit" : "Izin",
                                         style: TextStyle(
                                           color: isSakit
-                                              ? Colors.red.shade900
-                                              : Colors.orange.shade900,
+                                              ? (isDark ? Colors.red.shade200 : Colors.red.shade900)
+                                              : (isDark ? Colors.orange.shade200 : Colors.orange.shade900),
                                           fontSize: 11,
                                           fontWeight: FontWeight.bold,
                                         ),
@@ -285,7 +322,7 @@ class _HistoryTabState extends State<HistoryTab> {
                             ],
                           ),
                           const SizedBox(height: 6),
-                          const Divider(),
+                          Divider(color: isDark ? Colors.white12 : Colors.grey.shade300),
                           const SizedBox(height: 6),
                           if (isIzin) ...[
                             Row(
@@ -294,8 +331,8 @@ class _HistoryTabState extends State<HistoryTab> {
                                 Icon(
                                   isSakit ? Icons.local_hospital : Icons.info,
                                   color: isSakit
-                                      ? Colors.red.shade800
-                                      : Colors.orange.shade800,
+                                      ? (isDark ? Colors.red.shade300 : Colors.red.shade800)
+                                      : (isDark ? Colors.orange.shade300 : Colors.orange.shade800),
                                   size: 20,
                                 ),
                                 const SizedBox(width: 8),
@@ -308,9 +345,9 @@ class _HistoryTabState extends State<HistoryTab> {
                                         isSakit
                                             ? "Alasan Sakit:"
                                             : "Alasan Izin:",
-                                        style: const TextStyle(
+                                        style: TextStyle(
                                           fontSize: 12,
-                                          color: Colors.grey,
+                                          color: isDark ? Colors.grey.shade400 : Colors.grey,
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
@@ -319,10 +356,10 @@ class _HistoryTabState extends State<HistoryTab> {
                                         attendance.alasanIzin ?? '-',
                                         style: TextStyle(
                                           fontSize: 14,
-                                          fontWeight: FontWeight.w500,
+                                          fontWeight: FontWeight.bold,
                                           color: isSakit
-                                              ? Colors.red.shade900
-                                              : Colors.orange.shade900,
+                                              ? (isDark ? Colors.red.shade300 : Colors.red.shade900)
+                                              : (isDark ? Colors.orange.shade300 : Colors.orange.shade900),
                                         ),
                                       ),
                                     ],
@@ -338,29 +375,36 @@ class _HistoryTabState extends State<HistoryTab> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      const Text(
+                                      Text(
                                         "Check In:",
                                         style: TextStyle(
                                           fontSize: 11,
-                                          color: Colors.grey,
+                                          color: isDark ? Colors.grey.shade400 : Colors.grey,
+                                          fontWeight: FontWeight.bold,
                                         ),
                                       ),
                                       const SizedBox(height: 2),
                                       Text(
                                         attendance.checkInTime ?? '-',
-                                        style: const TextStyle(
+                                        style: TextStyle(
                                           fontWeight: FontWeight.bold,
-                                          color: Colors.green,
+                                          fontSize: 15,
+                                          color: isDark ? Colors.green.shade300 : Colors.green.shade700,
                                         ),
                                       ),
                                       if (attendance.checkInAddress !=
                                           null) ...[
                                         const SizedBox(height: 2),
                                         Text(
-                                          attendance.checkInAddress!,
-                                          style: const TextStyle(
+                                          _formatAddress(
+                                            attendance.checkInAddress,
+                                            attendance.checkInLat,
+                                            attendance.checkInLng,
+                                          ),
+                                          style: TextStyle(
                                             fontSize: 12,
-                                            color: Colors.black54,
+                                            fontWeight: FontWeight.bold,
+                                            color: isDark ? Colors.grey.shade300 : Colors.black54,
                                           ),
                                           maxLines: 1,
                                           overflow: TextOverflow.ellipsis,
@@ -392,29 +436,36 @@ class _HistoryTabState extends State<HistoryTab> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      const Text(
+                                      Text(
                                         "Check Out:",
                                         style: TextStyle(
                                           fontSize: 11,
-                                          color: Colors.grey,
+                                          color: isDark ? Colors.grey.shade400 : Colors.grey,
+                                          fontWeight: FontWeight.bold,
                                         ),
                                       ),
                                       const SizedBox(height: 2),
                                       Text(
                                         attendance.checkOutTime ?? '-',
-                                        style: const TextStyle(
+                                        style: TextStyle(
                                           fontWeight: FontWeight.bold,
-                                          color: Colors.orange,
+                                          fontSize: 15,
+                                          color: isDark ? Colors.orange.shade300 : Colors.orange.shade700,
                                         ),
                                       ),
                                       if (attendance.checkOutAddress !=
                                           null) ...[
                                         const SizedBox(height: 2),
                                         Text(
-                                          attendance.checkOutAddress!,
-                                          style: const TextStyle(
+                                          _formatAddress(
+                                            attendance.checkOutAddress,
+                                            attendance.checkOutLat,
+                                            attendance.checkOutLng,
+                                          ),
+                                          style: TextStyle(
                                             fontSize: 12,
-                                            color: Colors.black54,
+                                            fontWeight: FontWeight.bold,
+                                            color: isDark ? Colors.grey.shade300 : Colors.black54,
                                           ),
                                           maxLines: 1,
                                           overflow: TextOverflow.ellipsis,

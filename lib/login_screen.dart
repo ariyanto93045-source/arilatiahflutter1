@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import '../preference_handler.dart';
 import '../services/api_service.dart';
 import '../services/dio_client.dart';
-import 'views/register_screen.dart';
 import 'views/main_navigation_screen.dart';
+import 'views/register_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -34,7 +34,9 @@ class _LoginScreenState extends State<LoginScreen> {
         if (mounted) {
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => const MainNavigationScreen()),
+            MaterialPageRoute(
+              builder: (context) => const MainNavigationScreen(),
+            ),
           );
         }
       } else {
@@ -81,14 +83,12 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          "Login Absensi PPKD B6",
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            letterSpacing: 1.1,
-          ),
+          "Login Absensi Karyawan",
+          style: TextStyle(fontWeight: FontWeight.bold, letterSpacing: 1.1),
         ),
         backgroundColor: Colors.blue.shade700,
         foregroundColor: Colors.white,
@@ -111,7 +111,12 @@ class _LoginScreenState extends State<LoginScreen> {
                       height: 180,
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
-                          colors: [Colors.blue.shade400, Colors.blue.shade50],
+                          colors: isDark
+                              ? [
+                                  Colors.blue.shade800,
+                                  Colors.blue.shade900.withOpacity(0.2),
+                                ]
+                              : [Colors.blue.shade400, Colors.blue.shade50],
                           begin: Alignment.topCenter,
                           end: Alignment.bottomCenter,
                         ),
@@ -146,14 +151,29 @@ class _LoginScreenState extends State<LoginScreen> {
                 "Silahkan login untuk mengakses absensi",
                 style: TextStyle(
                   fontSize: 14,
-                  color: Colors.grey.shade600,
+                  color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
                 ),
               ),
               const SizedBox(height: 28),
+              // Email Field Label & Input
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  "Email",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
+                    color: isDark ? Colors.blue.shade300 : Colors.blue.shade800,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 8),
               Container(
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
-                    colors: [Colors.blue.shade50, Colors.white],
+                    colors: isDark
+                        ? [Colors.grey.shade900, Colors.grey.shade800]
+                        : [Colors.blue.shade50, Colors.white],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
@@ -161,25 +181,63 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 child: TextField(
                   controller: _emailCtrl,
+                  style: TextStyle(
+                    color: isDark ? Colors.white : Colors.black87,
+                  ),
                   decoration: InputDecoration(
-                    labelText: "Email",
-                    prefixIcon: const Icon(Icons.email_outlined, color: Colors.blue),
+                    hintText: "Masukkan email Anda",
+                    hintStyle: TextStyle(
+                      color: isDark
+                          ? Colors.grey.shade500
+                          : Colors.grey.shade600,
+                      fontSize: 14,
+                    ),
+                    prefixIcon: const Icon(
+                      Icons.email_outlined,
+                      color: Colors.blue,
+                    ),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(
+                        color: isDark
+                            ? Colors.grey.shade700
+                            : Colors.blue.shade200,
+                      ),
+                    ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide(color: Colors.blue.shade700, width: 2),
+                      borderSide: BorderSide(
+                        color: Colors.blue.shade700,
+                        width: 2,
+                      ),
                     ),
                   ),
                   keyboardType: TextInputType.emailAddress,
                 ),
               ),
               const SizedBox(height: 16),
+              // Password Field Label & Input
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  "Password",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
+                    color: isDark ? Colors.blue.shade300 : Colors.blue.shade800,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 8),
               Container(
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
-                    colors: [Colors.blue.shade50, Colors.white],
+                    colors: isDark
+                        ? [Colors.grey.shade900, Colors.grey.shade800]
+                        : [Colors.blue.shade50, Colors.white],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
@@ -187,18 +245,41 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 child: TextField(
                   controller: _passCtrl,
+                  obscureText: true,
+                  style: TextStyle(
+                    color: isDark ? Colors.white : Colors.black87,
+                  ),
                   decoration: InputDecoration(
-                    labelText: "Password",
-                    prefixIcon: const Icon(Icons.lock_outline, color: Colors.blue),
+                    hintText: "Masukkan password Anda",
+                    hintStyle: TextStyle(
+                      color: isDark
+                          ? Colors.grey.shade500
+                          : Colors.grey.shade600,
+                      fontSize: 14,
+                    ),
+                    prefixIcon: const Icon(
+                      Icons.lock_outline,
+                      color: Colors.blue,
+                    ),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(
+                        color: isDark
+                            ? Colors.grey.shade700
+                            : Colors.blue.shade200,
+                      ),
+                    ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide(color: Colors.blue.shade700, width: 2),
+                      borderSide: BorderSide(
+                        color: Colors.blue.shade700,
+                        width: 2,
+                      ),
                     ),
                   ),
-                  obscureText: true,
                 ),
               ),
               const SizedBox(height: 32),
@@ -219,7 +300,10 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         child: const Text(
                           "Login",
-                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                     ),
@@ -236,7 +320,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: Text(
                   "Belum punya akun? Daftar disini",
                   style: TextStyle(
-                    color: Colors.blue.shade700,
+                    color: isDark ? Colors.blue.shade300 : Colors.blue.shade700,
                     fontWeight: FontWeight.bold,
                     fontSize: 14,
                   ),
